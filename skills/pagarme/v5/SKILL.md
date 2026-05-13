@@ -242,7 +242,7 @@ Register webhook URL via Dashboard or API (`POST /webhooks`).
 
 ### Webhook Security
 
-Validate webhook signature using the `Signature` header (HMAC-SHA256) with your hub hub.
+Validate webhook signature using the `Signature` header (HMAC-SHA256 with your hub secret).
 
 ### Webhook Management Endpoints
 

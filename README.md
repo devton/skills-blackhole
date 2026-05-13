@@ -1,8 +1,8 @@
 # skills-blackhole
 
-Repository of agentic workflow skills generated from the [agentic-workflow-blueprint](https://github.com/devton/agentic-workflow-blueprint).
+Repository of agentic workflow skills. Each skill is a scoped, agent-oriented documentation contract for a specific technology or flow — agents load only what they need.
 
-Each skill is a scoped, agent-oriented documentation contract for a specific technology or flow. Agents load only what they need — less tokens, more precision.
+Built on the [agentic-workflow-blueprint](https://github.com/devton/agentic-workflow-blueprint) contract format.
 
 ## Structure
 
@@ -10,31 +10,32 @@ Each skill is a scoped, agent-oriented documentation contract for a specific tec
 skills-blackhole/
   blueprint/                   ← agentic-workflow-blueprint (template + reference)
   skills/
-    <technology>/              ← one folder per skill
-      SKILL.md                 ← contract: Goal, Scope, Triggers, Procedure, Outputs, Review gate
-      reference/               ← progressive disclosure (optional)
+    <technology>/
+      SKILL.md                 ← entry point: goal, scope, auth, routing, pitfalls
+      reference/               ← progressive disclosure: endpoint maps, routing matrices
       workflows/               ← chained workflows (optional)
   README.md
 ```
 
 ## How it works
 
-1. **Blueprint** defines the contract format and scaffolding procedure.
+1. **Blueprint** defines the contract format (Goal → Scope → Triggers → Procedure → Outputs → Review gate).
 2. Pick a technology/flow → generate a skill following the blueprint.
-3. Each skill is self-contained: inputs, outputs, invariants, procedure, review gate.
-4. Agents classify the task → load the right skill → execute deterministically.
+3. Each skill is self-contained: the agent classifies the task → loads the right skill → executes deterministically.
+
+## Available Skills
+
+- **Pagar.me v5** (`skills/pagarme/v5/`) — Brazilian payment gateway (Stone). Full API v5 reference: auth, credit card, Pix, boleto, subscriptions, marketplace split, webhooks, recipients, anti-fraud. ~100 endpoints mapped.
 
 ## Adding a new skill
 
-```bash
-# From this repo root, trigger the blueprint:
-# Provide: projectSlug, techStack, workflowsWanted, constraints
-# The agent scaffolds skills/<slug>/ with contracts and wires everything.
-```
+Use the blueprint as template:
 
-## Available skills
-
-<!-- Add entries as skills are created -->
+1. Read `blueprint/SKILL.md` for the scaffolding procedure.
+2. Create `skills/<tech>/SKILL.md` following the contract format.
+3. Add `reference/` files for progressive disclosure (endpoint maps, routing matrices).
+4. Update the **Available Skills** list above.
+5. Commit.
 
 ## License
 
