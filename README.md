@@ -26,6 +26,7 @@ skills-blackhole/
 ## Available Skills
 
 - **Pagar.me v5** (`skills/pagarme/v5/`) — Brazilian payment gateway (Stone). Full API v5 reference: auth, credit card, Pix, boleto, subscriptions, marketplace split, webhooks, recipients, anti-fraud. ~100 endpoints mapped.
+- **Sim Studio AI** (`skills/sim-ai/`) — Open-source agent workflow platform with visual canvas editor (ReactFlow). Orchestrator skill routing to 7 sub-skill workflows: block system, toolbar, subblock system, block node canvas, canvas editor, knowledge/RAG, MCP integration. v0.6.84.
 
 ## Adding a new skill
 
