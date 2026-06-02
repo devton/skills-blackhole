@@ -277,6 +277,21 @@ Types: `Unidade` (unit), `Pacote` (package), `Volume` (volume tiers), `Faixa` (r
 
 ## Financeiro
 
+### Payables (reconciliation)
+
+Marketplace receivables / payables import. Official docs: [Retornando recebíveis](https://docs.pagar.me/reference/retornando-recebiveis).
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/payables` | List payables |
+| GET | `/payables/{id}` | Get payable by ID |
+
+**Query params (`GET /payables`):** `recipient_id`, `charge_id`, `status`, `start_date`, `end_date`, `page`, `size`
+
+**Note:** Accepts `charge_id`, not `order_id`. Resolve charge from `GET /orders/{id}` → `charges[0].id`.
+
+**CLI:** see [`cli-tasks.md`](./cli-tasks.md) (`payable list`, `payable get`).
+
 ### Recebíveis (Receivables)
 
 | Method | Endpoint | Description |

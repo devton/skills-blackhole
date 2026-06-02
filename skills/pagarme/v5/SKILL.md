@@ -82,9 +82,40 @@ Content-Type: application/json
 Authorization: Basic <base64(secretKey:)>
 ```
 
+## Operational CLI (mise + curl)
+
+Read-only debug CLI for operators and agents. Source: [`.agents/skills/pagarme-v5/scripts/pagarme.sh`](scripts/pagarme.sh).
+
+### Prerequisites
+
+1. Install [mise](https://mise.jdx.dev/) and run `mise install` (installs `argc` + `jq` when using repo `mise.toml`).
+2. Configure env (any file with `SKILL_PAGARME_V5_*`, or `--env-file`):
+   - `SKILL_PAGARME_V5_SECRET_KEY` — required (never pass as CLI flag)
+   - `SKILL_PAGARME_V5_BASE_URL` — optional (default `https://api.pagar.me`; `/core/v5` appended automatically)
+   - Only `SKILL_PAGARME_V5_*` keys are read from the env file — no database or worker vars are loaded.
+
+### Quick start
+
+```bash
+mise run pagarme -- ping
+mise run pagarme -- order get or_abc123
+mise run pagarme -- payable list --charge-id=ch_xyz --size=10
+bash .agents/skills/pagarme-v5/scripts/pagarme.sh --help
+```
+
+Full task ↔ endpoint map: [`reference/cli-tasks.md`](reference/cli-tasks.md).
+
+### Safety
+
+- Phase 1 is **GET-only** (no capture, cancel, or create).
+- Init logs sandbox (`sk_test_*`) vs production (`sk_*`) key prefix on stderr.
+- **No database** — only `SKILL_PAGARME_V5_*` env vars are loaded; no application worker or ORM dependency.
+
 ## Domain Groups & Routing
 
 ### When operator asks about...
+
+Read-only inspection: use [`reference/cli-tasks.md`](reference/cli-tasks.md) (canonical command map). Integration flows: [`reference/routing-matrix.md`](reference/routing-matrix.md).
 
 | Intent | Domain Group | Reference |
 |--------|-------------|-----------|
@@ -92,9 +123,7 @@ Authorization: Basic <base64(secretKey:)>
 | Store cards, tokenize | Cartões | `reference/endpoint-map.md` → Cartões |
 | Shipping addresses | Endereços | `reference/endpoint-map.md` → Endereços |
 | Process payment (one-time) | Pedidos + Cobranças | `reference/endpoint-map.md` → Pedidos, Cobranças |
-| Credit card payment | Pagamentos → Cartão | `reference/endpoint-map.md` → Pedidos |
-| Pix payment | Pagamentos → Pix | `reference/endpoint-map.md` → Pedidos |
-| Boleto payment | Pagamentos → Boleto | `reference/endpoint-map.md` → Pedidos |
+| Credit card / Pix / Boleto | Pagamentos | `reference/endpoint-map.md` → Pedidos |
 | Recurring billing | Planos + Assinaturas + Faturas | `reference/endpoint-map.md` → Recorrência |
 | Split payments between sellers | Marketplace → Split | `reference/endpoint-map.md` → Marketplace |
 | Onboard sellers, manage payouts | Recebedores | `reference/endpoint-map.md` → Recebedores |
@@ -313,3 +342,5 @@ Additional fields: `antifraud_enabled: true`, `review`, provider-specific fields
 - Official API Docs: https://docs.pagar.me/reference/introdução-1
 - API Reference: https://docs.pagar.me/reference/getting-started-with-your-api
 - Endpoint map: `reference/endpoint-map.md`
+- Ops CLI tasks: `reference/cli-tasks.md`
+- Scripts: `scripts/pagarme.sh`, `mise.toml` (`mise run pagarme -- …`)
