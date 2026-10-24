@@ -38,6 +38,7 @@ No project container talks to `/var/run/docker.sock` directly and no project con
      environment:
        CONTAINERS: 1
        POST: 0
+       # DISABLE_IPV6: 1   # needed on hosts with IPv6 off, or haproxy fails to bind :::2375
      volumes:
        - /var/run/docker.sock:/var/run/docker.sock:ro
      networks: [metrics]

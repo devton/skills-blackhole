@@ -62,7 +62,7 @@ Bring one service to the baseline: non-root user, `cap_drop: [ALL]` plus justifi
    ```
    Merging several anchors: `<<: [*base, *hardened]`. Lists are not concatenated: a service-level `tmpfs` replaces the anchor's.
 4. Official image with a root entrypoint: add only the capabilities from the table, each with a comment. Prefer `user: "UID:GID"` with zero capabilities once the volume is owned by that user.
-5. Size limits from real usage (`docker stats --no-stream`, `cat /sys/fs/cgroup/pids.current` under load), with headroom.
+5. Size limits from real usage (`docker stats --no-stream`, and under load `cat /sys/fs/cgroup/pids.current` on cgroup v2 or `cat /sys/fs/cgroup/pids/pids.current` on cgroup v1), with headroom.
 6. Recreate the service (`docker compose up -d SERVICE`) and run the app's smoke test.
 7. Update the inventory row and run `audit-verify` for `service`.
 
@@ -77,7 +77,7 @@ Bring one service to the baseline: non-root user, `cap_drop: [ALL]` plus justifi
 - [ ] `id` shows a non-zero uid (own images).
 - [ ] `CapBnd` is `0000000000000000` or exactly the justified list.
 - [ ] `NoNewPrivs: 1` and `Seccomp: 2`.
-- [ ] `pids.max` and `memory.max` match the compose values.
+- [ ] `docker inspect -f '{{.HostConfig.PidsLimit}} {{.HostConfig.Memory}} {{.HostConfig.NanoCpus}}' C` matches the compose values (inside the container: `pids.max`/`memory.max` on cgroup v2, `pids/pids.max`/`memory/memory.limit_in_bytes` on cgroup v1).
 - [ ] Negative test: `docker compose exec -u 0 SERVICE chown nobody /tmp` fails.
 - [ ] Smoke test passes; no OOM (`docker inspect -f '{{.State.OOMKilled}}'` is false).
 

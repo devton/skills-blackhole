@@ -30,6 +30,7 @@ Run one service with a read-only root filesystem, where the only writable areas 
 - Never turn `read_only` off to fix an `EROFS`; add a narrow tmpfs or volume for that exact path.
 - Persistent data goes to volumes, never tmpfs. Logs go to stdout.
 - Every tmpfs has a `size=` and, when written by a non-root user, `uid=`/`gid=`.
+- Docker mounts tmpfs with `noexec,nosuid,nodev` by default. Add `exec` only to a tmpfs the app must execute files from (native modules or JIT code extracted to `/tmp`), and say why in a comment.
 
 ## Procedure
 
@@ -43,6 +44,10 @@ Run one service with a read-only root filesystem, where the only writable areas 
      - /home/app:size=32m,uid=10001,gid=10001,mode=0700
    volumes:
      - uploads:/app/storage
+   ```
+   A new named volume copies the ownership of its mount point from the image, and Docker creates a missing mount point as root. Create it in the Dockerfile before `USER`, or the non-root service cannot write to it:
+   ```dockerfile
+   RUN mkdir -p /app/storage && chown 10001:10001 /app/storage
    ```
 3. Recreate and run the smoke test, including flows that call external binaries or write files.
 4. For each `EROFS` in the logs, add one tmpfs/volume for that path and repeat step 3.

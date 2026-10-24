@@ -43,7 +43,7 @@ Produce a per-container PASS/FAIL report of the live hardening state and its dif
    | `priv` | `false` |
    | `net` | not `host` |
 3. Diff against the inventory; flag drift (new service, new capability, new mount).
-4. For distroless images (no `cat`), read status from the host: `nsenter -t $(docker inspect -f '{{.State.Pid}}' C) -p cat /proc/1/status`.
+4. For distroless images (no `cat`), read the status from the host: `cat /proc/$(docker inspect -f '{{.State.Pid}}' C)/status` (the audit script falls back to this). Do not use `nsenter -t PID -p cat /proc/1/status`: without `-m`, `/proc` is still the host's and it prints the host's PID 1.
 5. Optionally, once per release: `docker/docker-bench-security` (CIS Docker Benchmark).
 
 ## Outputs

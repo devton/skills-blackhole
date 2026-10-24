@@ -37,12 +37,17 @@ Replace the default seccomp profile of one small, stable service with an allowli
      - no-new-privileges:true
      - seccomp=./seccomp/SERVICE.audit.json
    ```
+   Make sure no event is lost before the window starts. Without auditd, `SCMP_ACT_LOG` events go to the kernel log through printk, which is rate-limited (`kauditd_printk_skb: N callbacks suppressed`) and drops most of them; a test burst logged 10 of ~580 events. Either run auditd (events then go to `/var/log/audit/audit.log`, not the kernel log) or disable the limit for the window with `sysctl -w kernel.printk_ratelimit=0` (restore it afterwards; the default is 5).
 2. Collect after the window:
    ```sh
+   # with auditd
+   ausearch -m SECCOMP --start week-ago -i | grep -o 'syscall=[a-z0-9_]*' | sort | uniq -c | sort -rn
+   # without auditd (printk ratelimit disabled)
    journalctl -k --since "7 days ago" | grep 'type=1326' \
      | grep -o 'syscall=[0-9]*' | sort | uniq -c | sort -rn
    # ausyscall NNN to map numbers to names
    ```
+   Keep the syscalls logged with `exe="/runc"` (or `comm="runc:[2:INIT]"`): runc installs the filter before `execve`, so its last steps run under the profile too.
 3. Build `seccomp/SERVICE.json` from the moby default: `defaultAction: SCMP_ACT_ERRNO`, allowlist = observed syscalls + language runtime needs (Go: `rt_sigreturn`, `sched_yield`, `mmap`, `madvise`, `clone`/`clone3` without namespace flags...).
 4. Switch the service to the enforcing profile, recreate, run a full cycle.
 5. Debug with a separate container on the same network (`docker exec` shells inherit the filter).

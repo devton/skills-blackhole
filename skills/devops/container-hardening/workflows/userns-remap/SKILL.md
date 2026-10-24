@@ -31,7 +31,7 @@ Enable daemon-wide user namespace remapping so container uid 0 maps to an unpriv
 ## Procedure
 
 1. Confirm baseline-service, socket-privileged and namespace-isolation passed for the projects on the host.
-2. Plan the migration: enabling remap switches Docker's data root to `/var/lib/docker/<uid>.<gid>`; existing images and volumes are not visible until it is turned off. Plan rebuild/pull and volume migration (copy + `chown` to the remapped uid range).
+2. Plan the migration: enabling remap switches Docker's data root to `/var/lib/docker/<uid>.<gid>`; existing images and volumes are not visible until it is turned off. Plan rebuild/pull and volume migration (copy + `chown` to the remapped uid range). On Docker 29+, remapping also turns off the containerd image store and falls back to the `overlay2` graph driver (the daemon logs `userns remapping enabled, disabling containerd snapshotter`).
 3. Propose the diff and wait for confirmation:
    ```json
    {
