@@ -7,7 +7,7 @@ Source: https://man7.org/linux/man-pages/man2/seccomp.2.html, https://docs.docke
 - Actions (precedence high to low): `KILL_PROCESS`, `KILL_THREAD`, `TRAP`, `ERRNO`, `USER_NOTIF`, `TRACE`, `LOG` (kernel 4.14+), `ALLOW`. Docker names: `SCMP_ACT_KILL_PROCESS`, `SCMP_ACT_ERRNO`, `SCMP_ACT_LOG`, `SCMP_ACT_ALLOW`, ...
 - Docker's default profile: `defaultAction: SCMP_ACT_ERRNO` (EPERM) with an allowlist of 300+ syscalls; blocks e.g. `mount`, `umount2`, `kexec_load`, `add_key`, `keyctl`, `bpf`, `unshare`, namespace-creating `clone`. Some rules are conditional on capabilities (adding `SYS_ADMIN` opens more).
 - A custom profile **replaces** the default entirely. Always start from moby's `profiles/seccomp/default.json`.
-- `SCMP_ACT_LOG` events land in the kernel audit log as `type=1326` with `syscall=NNN`; map with `ausyscall NNN` (auditd).
+- `SCMP_ACT_LOG` events are audit records `type=1326` with `syscall=NNN`; map with `ausyscall NNN` (auditd). With auditd running they go to `/var/log/audit/audit.log` (`ausearch -m SECCOMP`); without it they go to the kernel log, where printk rate limiting drops most of them unless `kernel.printk_ratelimit=0`.
 
 ## Profile skeleton
 

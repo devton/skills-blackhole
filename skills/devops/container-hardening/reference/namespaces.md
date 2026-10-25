@@ -3,7 +3,7 @@
 Source: https://man7.org/linux/man-pages/man7/namespaces.7.html, user_namespaces(7), https://docs.docker.com/engine/security/userns-remap/
 
 - Eight types: cgroup, ipc, network, mount, pid, time, user, uts. Each process's are visible in `/proc/<pid>/ns/`.
-- Docker creates a new namespace of each type per container **except user and time**. Without a user namespace, uid 0 in the container is uid 0 on the host.
+- Docker creates a new namespace of each type per container **except user and time**, and cgroup only on cgroup v2 hosts (on cgroup v1 the default `cgroupns` mode is `host`). Without a user namespace, uid 0 in the container is uid 0 on the host.
 - In a user namespace, capabilities only apply to resources governed by that namespace; container root maps to an unprivileged host uid (e.g. 100000).
 
 ## Forbidden in application services
