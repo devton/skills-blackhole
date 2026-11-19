@@ -27,6 +27,7 @@ skills-blackhole/
 
 - **Pagar.me v5** (`skills/pagarme/v5/`) — Brazilian payment gateway (Stone). Full API v5 reference: auth, credit card, Pix, boleto, subscriptions, marketplace split, webhooks, recipients, anti-fraud. ~100 endpoints mapped.
 - **Sim Studio AI** (`skills/sim-ai/`) — Open-source agent workflow platform with visual canvas editor (ReactFlow). Orchestrator skill routing to 7 sub-skill workflows: block system, toolbar, subblock system, block node canvas, canvas editor, knowledge/RAG, MCP integration. v0.6.84.
+- **Container hardening** (`skills/devops/container-hardening/`) — Harden Docker / docker-compose services (also on Dokploy): capabilities, namespaces, seccomp, read-only rootfs, limits, docker.sock and userns-remap. Orchestrator routing to 7 workflows, each closed by an audit gate (`scripts/hardening-audit.sh`).
 
 ## Adding a new skill
 
